@@ -1,0 +1,106 @@
+"use client";
+import { cancelOrder, getOrdersByUser } from "@/api/private/orders";
+import { format } from "date-fns";
+import Image from "next/image";
+import React from "react";
+import { useEffect, useState } from "react";
+import OrderStatus from "./_components/OrderStatus";
+import OrderActions from "./_components/OrderActions";
+import OrderFilter from "./_components/OrderFilter";
+import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
+
+const OrdersPage = () => {
+  const [orders, setOrders] = useState([]);
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+
+  useEffect(() => {
+    console.log(status);
+    getOrdersByUser(status ?? "")
+      .then((data) => setOrders(data))
+      .catch((error) => {
+        toast.error(error.response.data?.message);
+        console.log(error);
+      });
+  }, [status]);
+
+  return (
+    <section className="bg-gray-50 px-4 py-8 md:px-8 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-wrap justify-between items-center gap-6">
+          <div className="max-w-3xl">
+            <h1 className="text-slate-900 text-2xl font-bold mb-4 dark:text-slate-50">
+              Order History
+            </h1>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              View and manage your past orders
+            </p>
+          </div>
+        </div>
+        {/* filters */}
+        <OrderFilter status={status} />
+        <ul className="space-y-6 mt-6">
+          {orders.map((order) => (
+            <li
+              key={order._id}
+              className="bg-white rounded-lg border border-slate-300 overflow-hidden p-6 dark:bg-gray-800 dark:border-neutral-700"
+            >
+              <div className="flex flex-wrap justify-between gap-6">
+                <div className="max-w-3xl">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                      Order #{order.orderNumber}
+                    </h3>
+                    <OrderStatus status={order.status} />
+                  </div>
+                  <p className="text-slate-600 text-sm mt-3 dark:text-slate-400">
+                    Placed on {format(order.createdAt, "MMM dd, yyyy hh:mmaaa")}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+                    Rs. {order.totalPrice}
+                  </p>
+                  <p className="text-slate-600 text-sm mt-3 dark:text-slate-400">
+                    {order.orderItems?.length} items
+                  </p>
+                </div>
+              </div>
+              <hr className="border-slate-300 my-6 dark:border-neutral-700" />
+              <ul className="flex flex-wrap items-center gap-8">
+                {order.orderItems.map((item) => (
+                  <li key={item._id} className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gray-100 p-1 rounded-md overflow-hidden">
+                      <Image
+                        src={
+                          item.product?.imageUrls[0] ??
+                          "/assets/images/placeholder.png"
+                        }
+                        alt={item.product?.name ?? "img"}
+                        className="w-full h-full object-contain"
+                        height={64}
+                        width={64}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
+                        {item.product?.name}
+                      </p>
+                      <p className="text-xs text-slate-600 mt-1.5 dark:text-slate-400">
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <OrderActions id={order._id} status={order.status} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+};
+
+export default OrdersPage;

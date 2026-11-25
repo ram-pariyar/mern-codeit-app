@@ -1,0 +1,20 @@
+export const HOME_ROUTE = "/";
+export const ABOUT_ROUTE = "/about";
+export const PRODUCTS_ROUTE = "/products";
+export const SERVICES_ROUTE = "/services";
+export const CONTACT_ROUTE = "/contact";
+export const ORDERS_ROUTE = "/orders";
+export const LOGIN_ROUTE = "/login";
+export const CART_ROUTE = "/cart";
+export const FORGOT_PASSWORD_ROUTE = "/forgot-password";
+export const REGISTER_ROUTE = "/register";
+export const ACCOUNT_ROUTE = "/account";
+
+export const DASHBOARD_ROUTE = "/admin/dashboard";
+export const PRODUCT_MANAGEMENT_ROUTE = "/admin/product-management";
+export const ADD_PRODUCT_ROUTE = `${PRODUCT_MANAGEMENT_ROUTE}/add`;
+export const UPDATE_PRODUCT_ROUTE = `${PRODUCT_MANAGEMENT_ROUTE}/update`;
+export const ORDER_MANAGEMENT_ROUTE = "/admin/order-management";
+export const UPDATE_ORDER_ROUTE = `${ORDER_MANAGEMENT_ROUTE}/update`;
+export const USER_MANAGEMENT_ROUTE = "/admin/user-management";
+export const UPDATE_USER_ROUTE = `${USER_MANAGEMENT_ROUTE}/update`;
